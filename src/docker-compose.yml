@@ -1,9 +1,55 @@
 version: "3"
 
+networks:
+  losconectos:
+
 services:
-  website:
+  mariadb:
+    image: mariadb
+    container_name: mariadb
+    # build: requirements/mariadb
+    restart: always
+    networks:
+      - losconectos
+    volumes:
+      - db:/var/lib/mysql
+    env_file:
+      - .env
+
+  nginx:
     image: nginx
+    container_name: nginx
+    # build: requirements/nginx
+    restart: always
+    networks:
+      - losconectos
+    volumes:
+      - wp:/var/www/wordpress
     ports:
-      - "8080:80"
-    restart:
-      always
+      - 443:443
+
+  wordpress:
+    image: wordpress
+    container_name: wordpress
+    # build: requirements/wordpress
+    restart: always
+    networks:
+      - losconectos
+    volumes:
+      - wp:/var/www/wordpress
+    env_file:
+      - .env
+    
+volumes:
+  db:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ~/inception-db/mariadb
+  wp:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ~/inception-db/wordpress
