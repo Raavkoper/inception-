@@ -1,0 +1,7 @@
+FROM debian:bullseye
+
+MAINTAINER Raav Koper <rkoper@student.codam.nl>
+
+RUN apt-get update
+
+CMD [ "echo", "parrot.live" ]
